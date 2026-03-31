@@ -58,9 +58,18 @@ class NativeKVM(Gtk.Window):
         try:
             self.hid_kb = open('/dev/hidg0', 'wb')
             self.hid_mouse = open('/dev/hidg1', 'wb')
+            self.connect("realize", self.on_realize)
         except FileNotFoundError:
             print("[ERROR] USB Gadget files not found!")
             exit(1)
+
+    def on_realize(self, widget):
+        window = widget.get_window()
+
+        display = window.get_display()
+        cursor = Gdk.Cursor.new_from_name(display, "dot")
+
+        window.set_cursor(cursor)
 
     # --- USB FUNCTIONS ---
     def send_kb(self, hid_code):
